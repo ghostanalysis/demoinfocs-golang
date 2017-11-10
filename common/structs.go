@@ -2,10 +2,11 @@ package common
 
 import (
 	"encoding/binary"
-	"github.com/golang/geo/r3"
-	bs "github.com/markus-wa/demoinfocs-golang/bitread"
-	st "github.com/markus-wa/demoinfocs-golang/sendtables"
 	"io"
+
+	bs "github.com/ghostanalysis/demoinfocs-golang/bitread"
+	st "github.com/ghostanalysis/demoinfocs-golang/sendtables"
+	"github.com/golang/geo/r3"
 )
 
 // DemoHeader contains information about the demo's header.

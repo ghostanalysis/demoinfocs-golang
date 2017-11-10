@@ -2,9 +2,10 @@ package sendtables
 
 import (
 	"fmt"
-	"github.com/golang/geo/r3"
-	bs "github.com/markus-wa/demoinfocs-golang/bitread"
 	"math"
+
+	bs "github.com/ghostanalysis/demoinfocs-golang/bitread"
+	"github.com/golang/geo/r3"
 )
 
 const (

@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/markus-wa/demoinfocs-golang/common"
-	"github.com/markus-wa/demoinfocs-golang/events"
-	st "github.com/markus-wa/demoinfocs-golang/sendtables"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/ghostanalysis/demoinfocs-golang/common"
+	"github.com/ghostanalysis/demoinfocs-golang/events"
+	st "github.com/ghostanalysis/demoinfocs-golang/sendtables"
 )
 
 const maxOsPath = 260

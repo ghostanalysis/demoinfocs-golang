@@ -1,8 +1,8 @@
 package demoinfocs
 
 import (
+	bs "github.com/ghostanalysis/demoinfocs-golang/bitread"
 	"github.com/golang/geo/r3"
-	bs "github.com/markus-wa/demoinfocs-golang/bitread"
 )
 
 // TeamState contains a team's ID, score, clan name & country flag.

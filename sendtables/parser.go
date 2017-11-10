@@ -2,11 +2,12 @@ package sendtables
 
 import (
 	"fmt"
-	"github.com/gogo/protobuf/proto"
-	bs "github.com/markus-wa/demoinfocs-golang/bitread"
-	"github.com/markus-wa/demoinfocs-golang/msg"
 	"math"
 	"sort"
+
+	bs "github.com/ghostanalysis/demoinfocs-golang/bitread"
+	"github.com/ghostanalysis/demoinfocs-golang/msg"
+	"github.com/gogo/protobuf/proto"
 )
 
 type Parser struct {

@@ -3,9 +3,6 @@ package demoinfocs_test
 import (
 	"bytes"
 	"fmt"
-	dem "github.com/markus-wa/demoinfocs-golang"
-	"github.com/markus-wa/demoinfocs-golang/common"
-	"github.com/markus-wa/demoinfocs-golang/events"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -13,6 +10,10 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
+
+	dem "github.com/ghostanalysis/demoinfocs-golang"
+	"github.com/ghostanalysis/demoinfocs-golang/common"
+	"github.com/ghostanalysis/demoinfocs-golang/events"
 )
 
 const demSetPath = "test/cs-demos"

@@ -2,14 +2,14 @@
 
 Is a CS:GO demo parser written in Go based on [Valve's demoinfogo](https://github.com/ValveSoftware/csgo-demoinfo) and [SatsHelix's demoinfo](https://github.com/StatsHelix/demoinfo).
 
-[![GoDoc](https://godoc.org/github.com/markus-wa/demoinfocs-golang?status.svg)](https://godoc.org/github.com/markus-wa/demoinfocs-golang)
-[![Build Status](https://travis-ci.org/markus-wa/demoinfocs-golang.svg?branch=master)](https://travis-ci.org/markus-wa/demoinfocs-golang)
-[![codecov](https://codecov.io/gh/markus-wa/demoinfocs-golang/branch/master/graph/badge.svg)](https://codecov.io/gh/markus-wa/demoinfocs-golang)
+[![GoDoc](https://godoc.org/github.com/ghostanalysis/demoinfocs-golang?status.svg)](https://godoc.org/github.com/ghostanalysis/demoinfocs-golang)
+[![Build Status](https://travis-ci.org/ghostanalysis/demoinfocs-golang.svg?branch=master)](https://travis-ci.org/ghostanalysis/demoinfocs-golang)
+[![codecov](https://codecov.io/gh/ghostanalysis/demoinfocs-golang/branch/master/graph/badge.svg)](https://codecov.io/gh/ghostanalysis/demoinfocs-golang)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE.md)
 
 ## Go Get
 
-	go get github.com/markus-wa/demoinfocs-golang
+	go get github.com/ghostanalysis/demoinfocs-golang
 
 ## Example
 
@@ -20,9 +20,9 @@ Check out the godoc on the events package for some more information about the av
 ```go
 import (
 	"fmt"
-	dem "github.com/markus-wa/demoinfocs-golang"
-	"github.com/markus-wa/demoinfocs-golang/common"
-	"github.com/markus-wa/demoinfocs-golang/events"
+	dem "github.com/ghostanalysis/demoinfocs-golang"
+	"github.com/ghostanalysis/demoinfocs-golang/common"
+	"github.com/ghostanalysis/demoinfocs-golang/events"
 	"log"
 	"os"
 )

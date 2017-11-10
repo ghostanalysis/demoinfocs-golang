@@ -6,12 +6,12 @@ import (
 	"os"
 	"strconv"
 
+	bs "github.com/ghostanalysis/demoinfocs-golang/bitread"
+	"github.com/ghostanalysis/demoinfocs-golang/common"
+	"github.com/ghostanalysis/demoinfocs-golang/events"
+	"github.com/ghostanalysis/demoinfocs-golang/msg"
+	st "github.com/ghostanalysis/demoinfocs-golang/sendtables"
 	"github.com/golang/geo/r3"
-	bs "github.com/markus-wa/demoinfocs-golang/bitread"
-	"github.com/markus-wa/demoinfocs-golang/common"
-	"github.com/markus-wa/demoinfocs-golang/events"
-	"github.com/markus-wa/demoinfocs-golang/msg"
-	st "github.com/markus-wa/demoinfocs-golang/sendtables"
 )
 
 const entitySentinel = 9999

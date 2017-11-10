@@ -1,7 +1,7 @@
 package demoinfocs
 
 import (
-	"github.com/markus-wa/demoinfocs-golang/common"
+	"github.com/ghostanalysis/demoinfocs-golang/common"
 )
 
 type demoCommand byte

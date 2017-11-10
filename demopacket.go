@@ -2,9 +2,10 @@ package demoinfocs
 
 import (
 	"fmt"
-	"github.com/gogo/protobuf/proto"
-	"github.com/markus-wa/demoinfocs-golang/msg"
 	"sync"
+
+	"github.com/ghostanalysis/demoinfocs-golang/msg"
+	"github.com/gogo/protobuf/proto"
 )
 
 var packetEntitiesPool sync.Pool = sync.Pool{

@@ -2,8 +2,9 @@ package sendtables
 
 import (
 	"fmt"
-	bs "github.com/markus-wa/demoinfocs-golang/bitread"
 	"sync"
+
+	bs "github.com/ghostanalysis/demoinfocs-golang/bitread"
 )
 
 type Entity struct {

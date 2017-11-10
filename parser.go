@@ -4,8 +4,8 @@ import (
 	"io"
 
 	bs "github.com/ghostanalysis/demoinfocs-golang/bitread"
-	"github.com/ghostanalysis/demoinfocs-golang/common"
-	"github.com/ghostanalysis/demoinfocs-golang/msg"
+	common "github.com/ghostanalysis/demoinfocs-golang/common"
+	msg "github.com/ghostanalysis/demoinfocs-golang/msg"
 	st "github.com/ghostanalysis/demoinfocs-golang/sendtables"
 	dp "github.com/markus-wa/godispatch"
 )

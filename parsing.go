@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ghostanalysis/demoinfocs-golang/common"
-	"github.com/ghostanalysis/demoinfocs-golang/events"
+	common "github.com/ghostanalysis/demoinfocs-golang/common"
+	events "github.com/ghostanalysis/demoinfocs-golang/events"
 	st "github.com/ghostanalysis/demoinfocs-golang/sendtables"
 )
 
@@ -45,6 +45,14 @@ func (p *Parser) ParseHeader() error {
 
 	if h.Filestamp != "HL2DEMO" {
 		return errors.New("Invalid File-Type; expecting HL2DEMO in the first 8 bytes")
+	}
+
+	if h.PlaybackTime == 0 {
+		return errors.New("Got 0 PlaybackTime parsing header")
+	}
+
+	if h.PlaybackTicks == 0 {
+		return errors.New("Got 0 PlaybackTicks parsing header")
 	}
 
 	p.header = &h

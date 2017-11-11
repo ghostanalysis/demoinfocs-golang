@@ -46,9 +46,49 @@ type Parser struct {
 	cancelChan            chan struct{}
 }
 
-// Map returns the map name. E.g. de_dust2 or de_inferno.
-func (p *Parser) Map() string {
+// Protocol returns the demo header protocol
+func (p *Parser) Protocol() int {
+	return p.header.Protocol
+}
+
+// NetworkProtocol returns the demo header network protocol
+func (p *Parser) NetworkProtocol() int {
+	return p.header.NetworkProtocol
+}
+
+// ServerName returns the demo header server name e.g. Counter-Strike: Global Offensive
+func (p *Parser) ServerName() string {
+	return p.header.ServerName
+}
+
+// ClientName returns the demo header client name e.g. GOTV Demo
+func (p *Parser) ClientName() string {
+	return p.header.ClientName
+}
+
+// MapName returns the demo header map name. E.g. de_dust2 or de_inferno.
+func (p *Parser) MapName() string {
 	return p.header.MapName
+}
+
+// PlaybackTime returns the demo header playback time
+func (p *Parser) PlaybackTime() float32 {
+	return p.header.PlaybackTime
+}
+
+// PlaybackTicks returns the demo header playback ticks
+func (p *Parser) PlaybackTicks() int {
+	return p.header.PlaybackTicks
+}
+
+// PlaybackFrames returns the demo header playback frames
+func (p *Parser) PlaybackFrames() int {
+	return p.header.PlaybackFrames
+}
+
+// SignonLength returns the demo header signon length
+func (p *Parser) SignonLength() int {
+	return p.header.SignonLength
 }
 
 // Participants returns all connected players.

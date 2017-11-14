@@ -199,8 +199,9 @@ func TestExample(t *testing.T) {
 	// Might not be necessary for all demos (especially MM)
 	// But for pro matches / scrims it might be depending on how the server was set up
 	// TODO: This might not always be correct, needs testing
+	// @TODO: Consider using events.RoundAnnounceMatchStartedEvent
 	matchStarted := false
-	p.RegisterEventHandler(func(events.MatchStartedEvent) {
+	p.RegisterEventHandler(func(events.BeginNewMatchEvent) {
 		matchStarted = true
 	})
 	matchReallyStarted := false

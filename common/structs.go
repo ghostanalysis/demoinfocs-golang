@@ -125,14 +125,14 @@ func NewEquipment(eqName string) Equipment {
 }
 
 // NewSkinEquipment creates an equipment with a skin from a skinId and equipment name.
-func NewSkinEquipment(eqName string, skinId string) Equipment {
+func NewSkinEquipment(eqName string, skinID string) Equipment {
 	var wep EquipmentElement
 	if len(eqName) > 0 {
 		wep = MapEquipment(eqName)
 	} else {
-		wep = EE_Unknown
+		wep = EEUnknown
 	}
-	return Equipment{Weapon: wep, SkinID: skinId}
+	return Equipment{Weapon: wep, SkinID: skinID}
 }
 
 // ParsePlayerInfo parses player information from a byte stream.

@@ -7,6 +7,8 @@ const (
 
 const weaponPrefix = "weapon_"
 
+/*
+ */
 type (
 	RoundMVPReason   byte
 	Hitgroup         byte
@@ -16,126 +18,196 @@ type (
 	EquipmentClass   int
 )
 
+/*
+ */
 const (
-	MVPReason_MostEliminations RoundMVPReason = iota + 1
-	MVPReason_BombDefused
-	MVPReason_BombPlanted
+	MVPReasonMostEliminations RoundMVPReason = iota + 1
+	MVPReasonBombDefused
+	MVPReasonBombPlanted
 )
 
+// MVPReasonStrings maps constant values to strings
+var MVPReasonStrings = map[RoundMVPReason]string{
+	MVPReasonMostEliminations: "Most Eliminations",
+	MVPReasonBombDefused:      "Bomb Defused",
+	MVPReasonBombPlanted:      "Bomb Planted",
+}
+
+/*
+ */
 const (
-	HG_Generic  Hitgroup = 0
-	HG_Head     Hitgroup = 1
-	HG_Chest    Hitgroup = 2
-	HG_Stomach  Hitgroup = 3
-	HG_LeftArm  Hitgroup = 4
-	HG_RightArm Hitgroup = 5
-	HG_LeftLeg  Hitgroup = 6
-	HG_RightLeg Hitgroup = 7
-	HG_Gear     Hitgroup = 10
+	HGGeneric  Hitgroup = 0
+	HGHead     Hitgroup = 1
+	HGChest    Hitgroup = 2
+	HGStomach  Hitgroup = 3
+	HGLeftArm  Hitgroup = 4
+	HGRightArm Hitgroup = 5
+	HGLeftLeg  Hitgroup = 6
+	HGRightLeg Hitgroup = 7
+	HGGear     Hitgroup = 10
 )
 
+// HGStrings maps constant values to strings
+var HGStrings = map[Hitgroup]string{
+	HGGeneric:  "Generic",
+	HGHead:     "Head",
+	HGChest:    "Chest",
+	HGStomach:  "Stomach",
+	HGLeftArm:  "Left Arm",
+	HGRightArm: "Right Arm",
+	HGLeftLeg:  "Left Leg",
+	HGRightLeg: "Right leg",
+	HGGear:     "Gear",
+}
+
+/*
+ */
 const (
-	RER_TargetBombed RoundEndReason = iota + 1
-	RER_VIPEscaped
-	RER_VIPKilled
-	RER_TerroristsEscaped
-	RER_CTStoppedEscape
-	RER_TerroristsStopped
-	RER_BombDefused
-	RER_CTWin
-	RER_TerroristsWin
-	RER_Draw
-	RER_HostagesRescued
-	RER_TargetSaved
-	RER_HostagesNotRescued
-	RER_TerroristsNotEscaped
-	RER_VIPNotEscaped
-	RER_GameStart
-	RER_TerroristsSurrender
-	RER_CTSurrender
+	RERTargetBombed RoundEndReason = iota + 1
+	RERVIPEscaped
+	RERVIPKilled
+	RERTerroristsEscaped
+	RERCTStoppedEscape
+	RERTerroristsStopped
+	RERBombDefused
+	RERCTWin
+	RERTerroristsWin
+	RERDraw
+	RERHostagesRescued
+	RERTargetSaved
+	RERHostagesNotRescued
+	RERTerroristsNotEscaped
+	RERVIPNotEscaped
+	RERGameStart
+	RERTerroristsSurrender
+	RERCTSurrender
 )
 
+// RERStrings maps constant values to strings
+var RERStrings = map[RoundEndReason]string{
+	RERTargetBombed:         "Target Bombed",
+	RERVIPEscaped:           "VIP Escaped",
+	RERVIPKilled:            "VIP Killed",
+	RERTerroristsEscaped:    "Terrorists Escaped",
+	RERCTStoppedEscape:      "CT Stopped Escape",
+	RERTerroristsStopped:    "Terrorists Stopped",
+	RERBombDefused:          "Bomb Defused",
+	RERCTWin:                "CT Win",
+	RERTerroristsWin:        "Terrorists Win",
+	RERDraw:                 "Draw",
+	RERHostagesRescued:      "Hostages Rescued",
+	RERTargetSaved:          "Target Saved",
+	RERHostagesNotRescued:   "Hostages Not Rescued",
+	RERTerroristsNotEscaped: "Terrorists Not Escaped",
+	RERVIPNotEscaped:        "VIP Not Escaped",
+	RERGameStart:            "Game Start",
+	RERTerroristsSurrender:  "Terrorists Surrender",
+	RERCTSurrender:          "CT Surrender",
+}
+
+func (c RoundEndReason) String() string {
+	return RERStrings[c]
+}
+
+/*
+ */
 const (
-	Team_Unassigned Team = iota
-	Team_Spectators
-	Team_Terrorists
-	Team_CounterTerrorists
+	TeamUnassigned Team = iota
+	TeamSpectators
+	TeamTerrorists
+	TeamCounterTerrorists
 )
 
+// TeamStrings maps constant values to strings
+var TeamStrings = map[Team]string{
+	TeamUnassigned:        "Unassigned",
+	TeamSpectators:        "Spectators",
+	TeamTerrorists:        "Terrorists",
+	TeamCounterTerrorists: "Counter Terrorists",
+}
+
+func (c Team) String() string {
+	return TeamStrings[c]
+}
+
+/*
+ */
 const (
-	EE_Unknown EquipmentElement = 0
+	EEUnknown EquipmentElement = 0
 
 	// Pistols
 
-	EE_P2000        EquipmentElement = 1
-	EE_Glock        EquipmentElement = 2
-	EE_P250         EquipmentElement = 3
-	EE_Deagle       EquipmentElement = 4
-	EE_FiveSeven    EquipmentElement = 5
-	EE_DualBarettas EquipmentElement = 6
-	EE_Tec9         EquipmentElement = 7
-	EE_CZ           EquipmentElement = 8
-	EE_USP          EquipmentElement = 9
-	EE_Revolver     EquipmentElement = 10
+	EEP2000        EquipmentElement = 1
+	EEGlock        EquipmentElement = 2
+	EEP250         EquipmentElement = 3
+	EEDeagle       EquipmentElement = 4
+	EEFiveSeven    EquipmentElement = 5
+	EEDualBarettas EquipmentElement = 6
+	EETec9         EquipmentElement = 7
+	EECZ           EquipmentElement = 8
+	EEUSP          EquipmentElement = 9
+	EERevolver     EquipmentElement = 10
 
 	// SMGs
 
-	EE_MP7   EquipmentElement = 101
-	EE_MP9   EquipmentElement = 102
-	EE_Bizon EquipmentElement = 103
-	EE_Mac10 EquipmentElement = 104
-	EE_UMP   EquipmentElement = 105
-	EE_P90   EquipmentElement = 106
+	EEMP7   EquipmentElement = 101
+	EEMP9   EquipmentElement = 102
+	EEBizon EquipmentElement = 103
+	EEMac10 EquipmentElement = 104
+	EEUMP   EquipmentElement = 105
+	EEP90   EquipmentElement = 106
 
 	// Heavy
 
-	EE_SawedOff EquipmentElement = 201
-	EE_Nova     EquipmentElement = 202
-	EE_Swag7    EquipmentElement = 203
-	EE_XM1014   EquipmentElement = 204
-	EE_M249     EquipmentElement = 205
-	EE_Negev    EquipmentElement = 206
+	EESawedOff EquipmentElement = 201
+	EENova     EquipmentElement = 202
+	EESwag7    EquipmentElement = 203
+	EEXM1014   EquipmentElement = 204
+	EEM249     EquipmentElement = 205
+	EENegev    EquipmentElement = 206
 
 	// Rifles
 
-	EE_Gallil EquipmentElement = 301
-	EE_Famas  EquipmentElement = 302
-	EE_AK47   EquipmentElement = 303
-	EE_M4A4   EquipmentElement = 304
-	EE_M4A1   EquipmentElement = 305
-	EE_Scout  EquipmentElement = 306
-	EE_SG556  EquipmentElement = 307
-	EE_AUG    EquipmentElement = 308
-	EE_AWP    EquipmentElement = 309
-	EE_Scar20 EquipmentElement = 310
-	EE_G3SG1  EquipmentElement = 311
+	EEGallil EquipmentElement = 301
+	EEFamas  EquipmentElement = 302
+	EEAK47   EquipmentElement = 303
+	EEM4A4   EquipmentElement = 304
+	EEM4A1   EquipmentElement = 305
+	EEScout  EquipmentElement = 306
+	EESG556  EquipmentElement = 307
+	EEAUG    EquipmentElement = 308
+	EEAWP    EquipmentElement = 309
+	EEScar20 EquipmentElement = 310
+	EEG3SG1  EquipmentElement = 311
 
 	// Equipment
 
-	EE_Zeus      EquipmentElement = 401
-	EE_Kevlar    EquipmentElement = 402
-	EE_Helmet    EquipmentElement = 403
-	EE_Bomb      EquipmentElement = 404
-	EE_Knife     EquipmentElement = 405
-	EE_DefuseKit EquipmentElement = 406
-	EE_World     EquipmentElement = 407
+	EEZeus      EquipmentElement = 401
+	EEKevlar    EquipmentElement = 402
+	EEHelmet    EquipmentElement = 403
+	EEBomb      EquipmentElement = 404
+	EEKnife     EquipmentElement = 405
+	EEDefuseKit EquipmentElement = 406
+	EEWorld     EquipmentElement = 407
 
 	// Grenades
 
-	EE_Decoy      EquipmentElement = 501
-	EE_Molotov    EquipmentElement = 502
-	EE_Incendiary EquipmentElement = 503
-	EE_Flash      EquipmentElement = 504
-	EE_Smoke      EquipmentElement = 505
-	EE_HE         EquipmentElement = 506
+	EEDecoy      EquipmentElement = 501
+	EEMolotov    EquipmentElement = 502
+	EEIncendiary EquipmentElement = 503
+	EEFlash      EquipmentElement = 504
+	EESmoke      EquipmentElement = 505
+	EEHE         EquipmentElement = 506
 )
 
+/*
+ */
 const (
-	EC_Unknown EquipmentClass = iota
-	EC_Pistols
-	EC_SMG
-	EC_Heavy
-	EC_Rifle
-	EC_Equipment
-	EC_Grenade
+	ECUnknown EquipmentClass = iota
+	ECPistols
+	ECSMG
+	ECHeavy
+	ECRifle
+	ECEquipment
+	ECGrenade
 )

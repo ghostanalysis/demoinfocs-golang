@@ -7,14 +7,41 @@ import (
 	"strconv"
 
 	bs "github.com/ghostanalysis/demoinfocs-golang/bitread"
-	"github.com/ghostanalysis/demoinfocs-golang/common"
-	"github.com/ghostanalysis/demoinfocs-golang/events"
-	"github.com/ghostanalysis/demoinfocs-golang/msg"
+	common "github.com/ghostanalysis/demoinfocs-golang/common"
+	events "github.com/ghostanalysis/demoinfocs-golang/events"
+	msg "github.com/ghostanalysis/demoinfocs-golang/msg"
 	st "github.com/ghostanalysis/demoinfocs-golang/sendtables"
-	"github.com/golang/geo/r3"
+	r3 "github.com/golang/geo/r3"
 )
 
 const entitySentinel = 9999
+
+func mapGameEventData(d *msg.CSVCMsg_GameEventListDescriptorT, e *msg.CSVCMsg_GameEvent) map[string]*msg.CSVCMsg_GameEventKeyT {
+	data := make(map[string]*msg.CSVCMsg_GameEventKeyT)
+	for i, k := range d.Keys {
+		data[k.Name] = e.Keys[i]
+	}
+	return data
+}
+
+func getCommunityID(guid string) int64 {
+	if guid == "BOT" {
+		return 0
+	}
+
+	authSrv, errSrv := strconv.ParseInt(guid[8:9], 10, 64)
+	authID, errID := strconv.ParseInt(guid[10:], 10, 64)
+
+	if errSrv != nil {
+		panic(errSrv.Error())
+	}
+	if errID != nil {
+		panic(errID.Error())
+	}
+
+	// FIXME: WTF are we doing here???
+	return 76561197960265728 + authID*2 + authSrv
+}
 
 func (p *Parser) handlePacketEntities(pe *msg.CSVCMsg_PacketEntities) {
 	r := bs.NewSmallBitReader(bytes.NewReader(pe.EntityData))
@@ -117,16 +144,19 @@ func (p *Parser) handleGameEvent(ge *msg.CSVCMsg_GameEvent) {
 	case "round_announce_last_round_half": // Last round of the half
 		p.eventDispatcher.Dispatch(events.LastRoundHalfEvent{})
 
+	case "round_announce_warmup":
+		p.eventDispatcher.Dispatch(events.RoundAnnounceWarmupEvent{})
+
 	case "round_end": // Round ended and the winner was announced
 		data = mapGameEventData(d, ge)
 
-		t := common.Team_Spectators
+		t := common.TeamSpectators
 
 		switch data["winner"].GetValByte() {
 		case int32(p.tState.id):
-			t = common.Team_Terrorists
+			t = common.TeamTerrorists
 		case int32(p.ctState.id):
-			t = common.Team_CounterTerrorists
+			t = common.TeamCounterTerrorists
 		}
 
 		p.eventDispatcher.Dispatch(events.RoundEndedEvent{
@@ -151,11 +181,14 @@ func (p *Parser) handleGameEvent(ge *msg.CSVCMsg_GameEvent) {
 
 		p.eventDispatcher.Dispatch(events.BotTakenOverEvent{Taker: p.connectedPlayers[int(data["userid"].GetValShort())]})
 
-	case "begin_new_match": // Match started
-		p.eventDispatcher.Dispatch(events.MatchStartedEvent{})
+	case "begin_new_match":
+		p.eventDispatcher.Dispatch(events.BeginNewMatchEvent{})
 
 	case "round_freeze_end": // Round start freeze ended
 		p.eventDispatcher.Dispatch(events.FreezetimeEndedEvent{})
+
+	case "round_announce_match_start": // Special match start announcement
+		p.eventDispatcher.Dispatch(events.RoundAnnounceMatchStartedEvent{})
 
 	case "player_footstep": // Footstep sound
 		data = mapGameEventData(d, ge)
@@ -174,7 +207,7 @@ func (p *Parser) handleGameEvent(ge *msg.CSVCMsg_GameEvent) {
 		e := events.WeaponFiredEvent{Shooter: p.connectedPlayers[int(data["userid"].GetValShort())]}
 		wep := common.NewEquipment(data["weapon"].GetValString())
 
-		if e.Shooter != nil && wep.Class() != common.EC_Grenade {
+		if e.Shooter != nil && wep.Class() != common.ECGrenade {
 			e.Weapon = e.Shooter.ActiveWeapon()
 		} else {
 			e.Weapon = &wep
@@ -196,7 +229,7 @@ func (p *Parser) handleGameEvent(ge *msg.CSVCMsg_GameEvent) {
 		wep := common.NewSkinEquipment(data["weapon"].GetValString(), data["weapon_itemid"].GetValString())
 
 		// FIXME: Should we do that last weapons > 0 check above as well?????
-		if e.Killer != nil && wep.Class() != common.EC_Grenade && len(e.Killer.Weapons) > 0 {
+		if e.Killer != nil && wep.Class() != common.ECGrenade && len(e.Killer.Weapons) > 0 {
 			e.Weapon = e.Killer.ActiveWeapon()
 		} else {
 			e.Weapon = &wep
@@ -219,7 +252,7 @@ func (p *Parser) handleGameEvent(ge *msg.CSVCMsg_GameEvent) {
 
 		wep := common.NewEquipment(data["weapon"].GetValString())
 
-		if e.Attacker != nil && wep.Class() != common.EC_Grenade && len(e.Attacker.Weapons) > 0 {
+		if e.Attacker != nil && wep.Class() != common.ECGrenade && len(e.Attacker.Weapons) > 0 {
 			e.Weapon = e.Attacker.ActiveWeapon()
 		} else {
 			e.Weapon = &wep
@@ -256,28 +289,28 @@ func (p *Parser) handleGameEvent(ge *msg.CSVCMsg_GameEvent) {
 
 		switch d.Name {
 		case "flashbang_detonate": // Flash exploded
-			p.eventDispatcher.Dispatch(events.FlashExplodedEvent{NadeEvent: events.BuildNadeEvent(common.EE_Flash, thrower, position)})
+			p.eventDispatcher.Dispatch(events.FlashExplodedEvent{NadeEvent: events.BuildNadeEvent(common.EEFlash, thrower, position)})
 
 		case "hegrenade_detonate": // HE exploded
-			p.eventDispatcher.Dispatch(events.HeExplodedEvent{NadeEvent: events.BuildNadeEvent(common.EE_HE, thrower, position)})
+			p.eventDispatcher.Dispatch(events.HeExplodedEvent{NadeEvent: events.BuildNadeEvent(common.EEHE, thrower, position)})
 
 		case "decoy_started": // Decoy started
-			p.eventDispatcher.Dispatch(events.DecoyStartEvent{NadeEvent: events.BuildNadeEvent(common.EE_Decoy, thrower, position)})
+			p.eventDispatcher.Dispatch(events.DecoyStartEvent{NadeEvent: events.BuildNadeEvent(common.EEDecoy, thrower, position)})
 
 		case "decoy_detonate": // Decoy exploded/expired
-			p.eventDispatcher.Dispatch(events.DecoyEndEvent{NadeEvent: events.BuildNadeEvent(common.EE_Decoy, thrower, position)})
+			p.eventDispatcher.Dispatch(events.DecoyEndEvent{NadeEvent: events.BuildNadeEvent(common.EEDecoy, thrower, position)})
 
 		case "smokegrenade_detonate": // Smoke popped
-			p.eventDispatcher.Dispatch(events.SmokeStartEvent{NadeEvent: events.BuildNadeEvent(common.EE_Smoke, thrower, position)})
+			p.eventDispatcher.Dispatch(events.SmokeStartEvent{NadeEvent: events.BuildNadeEvent(common.EESmoke, thrower, position)})
 
 		case "smokegrenade_expired": // Smoke expired
-			p.eventDispatcher.Dispatch(events.SmokeEndEvent{NadeEvent: events.BuildNadeEvent(common.EE_Smoke, thrower, position)})
+			p.eventDispatcher.Dispatch(events.SmokeEndEvent{NadeEvent: events.BuildNadeEvent(common.EESmoke, thrower, position)})
 
 		case "inferno_startburn": // Incendiary exploded/started
-			p.eventDispatcher.Dispatch(events.FireNadeStartEvent{NadeEvent: events.BuildNadeEvent(common.EE_Incendiary, thrower, position)})
+			p.eventDispatcher.Dispatch(events.FireNadeStartEvent{NadeEvent: events.BuildNadeEvent(common.EEIncendiary, thrower, position)})
 
 		case "inferno_expire": // Incendiary expired
-			p.eventDispatcher.Dispatch(events.FireNadeEndEvent{NadeEvent: events.BuildNadeEvent(common.EE_Incendiary, thrower, position)})
+			p.eventDispatcher.Dispatch(events.FireNadeEndEvent{NadeEvent: events.BuildNadeEvent(common.EEIncendiary, thrower, position)})
 		}
 
 	case "player_connect": // Player connected. . .?
@@ -323,20 +356,20 @@ func (p *Parser) handleGameEvent(ge *msg.CSVCMsg_GameEvent) {
 		// FIXME: We could probably just cast team & oldteam to common.Team, should always be correct. . . Needs testing
 		switch data["team"].GetValByte() {
 		case int32(p.tState.id):
-			e.NewTeam = common.Team_Terrorists
+			e.NewTeam = common.TeamTerrorists
 		case int32(p.ctState.id):
-			e.NewTeam = common.Team_CounterTerrorists
+			e.NewTeam = common.TeamCounterTerrorists
 		default:
-			e.NewTeam = common.Team_Spectators
+			e.NewTeam = common.TeamSpectators
 		}
 
 		switch data["oldteam"].GetValByte() {
 		case int32(p.tState.id):
-			e.OldTeam = common.Team_Terrorists
+			e.OldTeam = common.TeamTerrorists
 		case int32(p.ctState.id):
-			e.OldTeam = common.Team_CounterTerrorists
+			e.OldTeam = common.TeamCounterTerrorists
 		default:
-			e.OldTeam = common.Team_Spectators
+			e.OldTeam = common.TeamSpectators
 		}
 
 		p.eventDispatcher.Dispatch(e)
@@ -451,7 +484,6 @@ func (p *Parser) handleGameEvent(ge *msg.CSVCMsg_GameEvent) {
 
 	// Probably not that interesting:
 	case "buytime_ended": // Not actually end of buy time, seems to only be sent once per game at the start
-	case "round_announce_match_start": // Special match start announcement
 	case "bomb_beep": // Bomb beep
 	case "player_spawn": // Player spawn
 	case "hltv_status": // Don't know
@@ -466,7 +498,6 @@ func (p *Parser) handleGameEvent(ge *msg.CSVCMsg_GameEvent) {
 	case "announce_phase_end": // Dunno
 	case "tournament_reward": // Dunno
 	case "other_death": // Dunno
-	case "round_announce_warmup": // Dunno
 	case "server_cvar": // Dunno
 	case "weapon_fire_on_empty": // Sounds boring
 	case "hltv_fixed": // Dunno
@@ -474,33 +505,6 @@ func (p *Parser) handleGameEvent(ge *msg.CSVCMsg_GameEvent) {
 	default:
 		fmt.Fprintf(os.Stderr, "WARNING: Unknown event %q\n", d.Name)
 	}
-}
-
-func mapGameEventData(d *msg.CSVCMsg_GameEventListDescriptorT, e *msg.CSVCMsg_GameEvent) map[string]*msg.CSVCMsg_GameEventKeyT {
-	data := make(map[string]*msg.CSVCMsg_GameEventKeyT)
-	for i, k := range d.Keys {
-		data[k.Name] = e.Keys[i]
-	}
-	return data
-}
-
-func getCommunityID(guid string) int64 {
-	if guid == "BOT" {
-		return 0
-	}
-
-	authSrv, errSrv := strconv.ParseInt(guid[8:9], 10, 64)
-	authID, errID := strconv.ParseInt(guid[10:], 10, 64)
-
-	if errSrv != nil {
-		panic(errSrv.Error())
-	}
-	if errID != nil {
-		panic(errID.Error())
-	}
-
-	// FIXME: WTF are we doing here???
-	return 76561197960265728 + authID*2 + authSrv
 }
 
 func (p *Parser) handleUpdateStringTable(tab *msg.CSVCMsg_UpdateStringTable) {
@@ -514,7 +518,6 @@ func (p *Parser) handleUpdateStringTable(tab *msg.CSVCMsg_UpdateStringTable) {
 		// Only handle updates for the above types
 		p.handleCreateStringTable(cTab)
 	}
-
 }
 
 func (p *Parser) handleCreateStringTable(tab *msg.CSVCMsg_CreateStringTable) {

@@ -14,11 +14,14 @@ type HeaderParsedEvent struct {
 // TickDoneEvent signals that a tick is done.
 type TickDoneEvent struct{}
 
-// MatchStartedEvent signals that the match has started.
-type MatchStartedEvent struct{}
+// BeginNewMatchEvent signals a new match has begun.
+type BeginNewMatchEvent struct{}
 
 // RoundAnnounceMatchStartedEvent signals that the announcement "Match Started" has been displayed.
 type RoundAnnounceMatchStartedEvent struct{}
+
+// RoundAnnounceWarmupEvent @TODO more detail
+type RoundAnnounceWarmupEvent struct{}
 
 // RoundEndedEvent signals that the last round is over
 type RoundEndedEvent struct {

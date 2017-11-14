@@ -20,11 +20,13 @@ const (
 	playerWeaponPrePrefix = "bcc_nonlocaldata."
 )
 
+/*
+ */
 const (
-	teamName_Unassigned = "Unassigned"
-	teamName_Spectator  = "Spectator"
-	teamName_Terrorist  = "TERRORIST"
-	teamName_Ct         = "CT"
+	teamNameUnassigned = "Unassigned"
+	teamNameSpectator  = "Spectator"
+	teamNameTerrorist  = "TERRORIST"
+	teamNameCt         = "CT"
 )
 
 // ParseHeader attempts to parse the header of the demo.
@@ -256,11 +258,11 @@ func (p *Parser) mapEquipment() {
 					p.equipmentMapping[sc] = common.MapEquipment(strings.ToLower(sc.DTName[3:]))
 				}
 			} else if sc.Name == "CKnife" || (len(sc.BaseClasses) > 6 && sc.BaseClasses[6].Name == "CKnife") {
-				p.equipmentMapping[sc] = common.EE_Knife
+				p.equipmentMapping[sc] = common.EEKnife
 			} else {
 				switch sc.Name {
 				case "CC4":
-					p.equipmentMapping[sc] = common.EE_Bomb
+					p.equipmentMapping[sc] = common.EEBomb
 
 				case "CWeaponNOVA":
 					fallthrough
@@ -310,16 +312,16 @@ func (p *Parser) handleTeamScores() {
 			var t common.Team
 
 			switch team {
-			case teamName_Ct:
+			case teamNameCt:
 				s = &p.ctState
-				t = common.Team_CounterTerrorists
+				t = common.TeamCounterTerrorists
 
-			case teamName_Terrorist:
+			case teamNameTerrorist:
 				s = &p.tState
-				t = common.Team_Terrorists
+				t = common.TeamTerrorists
 
-			case teamName_Unassigned: // Ignore
-			case teamName_Spectator: // Ignore
+			case teamNameUnassigned: // Ignore
+			case teamNameSpectator: // Ignore
 
 			default:
 				panic(fmt.Sprintf("Unexpected team %q", team))
@@ -444,11 +446,11 @@ func (p *Parser) handleNewPlayer(playerEntity *st.Entity) {
 		// FIXME: We could probably just cast TeamID to common.Team or not even set it because the teamIDs should be the same. . . needs testing
 		switch pl.TeamID {
 		case p.ctState.id:
-			pl.Team = common.Team_CounterTerrorists
+			pl.Team = common.TeamCounterTerrorists
 		case p.tState.id:
-			pl.Team = common.Team_Terrorists
+			pl.Team = common.TeamTerrorists
 		default:
-			pl.Team = common.Team_Spectators
+			pl.Team = common.TeamSpectators
 		}
 	})
 
@@ -578,13 +580,13 @@ func (p *Parser) handleWeapon(event st.EntityCreatedEvent) {
 		})
 	}
 
-	// FIXME: Deag/R8???
+	// FIXME: Deag/R8??? https://github.com/StatsHelix/demoinfo/pull/131
 	switch eq.Weapon {
-	case common.EE_P2000:
-		wepFix("_pist_hkp2000", "_pist_223", func() { eq.Weapon = common.EE_USP })
-	case common.EE_M4A4:
-		wepFix("_rif_m4a1", "_rif_m4a1_s", func() { eq.Weapon = common.EE_M4A1 })
-	case common.EE_P250:
-		wepFix("_pist_p250", "_pist_cz_75", func() { eq.Weapon = common.EE_CZ })
+	case common.EEP2000:
+		wepFix("_pist_hkp2000", "_pist_223", func() { eq.Weapon = common.EEUSP })
+	case common.EEM4A4:
+		wepFix("_rif_m4a1", "_rif_m4a1_s", func() { eq.Weapon = common.EEM4A1 })
+	case common.EEP250:
+		wepFix("_pist_p250", "_pist_cz_75", func() { eq.Weapon = common.EECZ })
 	}
 }

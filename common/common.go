@@ -92,7 +92,7 @@ func MapEquipment(eqName string) EquipmentElement {
 			wep = EEMac10
 
 		case "mag7":
-			wep = EESwag7
+			wep = EEMag7
 
 		case "molotov":
 			fallthrough
